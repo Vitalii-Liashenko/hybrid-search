@@ -1,0 +1,14 @@
+# Option for CPU (there are also gpu/* tags if you run on CUDA/ROCm)
+FROM ghcr.io/huggingface/text-embeddings-inference:cpu-latest
+
+# Argument with the model name (you can replace it with another one without changing the Dockerfile)
+ARG MODEL_ID=google/embeddinggemma-300m
+ENV MODEL_ID=${MODEL_ID}
+# If the model requires a token — it will be provided at runtime via env
+
+# By default, TEI will start an HTTP server on 0.0.0.0:80 and
+# load the model from MODEL_ID on the first start (or during build if you add pre-pull).
+# Optionally, you can “warm up” the weights during build:
+# RUN text-embeddings-router --model-id $MODEL_ID --warmup-only
+
+# The container starts with the default CMD from the base image.

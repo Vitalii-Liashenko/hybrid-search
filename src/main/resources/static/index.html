@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hybrid Search UI</title>
+    <style>
+        :root {
+            --primary-bg: #f7fafc;
+            --header-bg: #2d3748;
+            --header-text: #fff;
+            --footer-bg: #2d3748;
+            --footer-text: #fff;
+            --accent: #4299e1;
+            --row-even: #e2e8f0;
+            --row-odd: #fff;
+            --row-hover: #bee3f8;
+            --error: #e53e3e;
+        }
+        body { font-family: Arial, sans-serif; margin: 0; background: var(--primary-bg); min-height: 100vh; display: flex; flex-direction: column; }
+        header {
+            background: var(--header-bg);
+            color: var(--header-text);
+            padding: 24px 32px 16px 32px;
+            font-size: 2rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .container { flex: 1; padding: 32px; }
+        .actions { margin-bottom: 24px; }
+        .actions button { margin-right: 12px; background: var(--accent); color: #fff; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; transition: background 0.2s; }
+        .actions button:hover { background: #2b6cb0; }
+        .search-form { margin-bottom: 24px; }
+        .search-form label { margin-right: 8px; }
+        .search-form input, .search-form select { margin-right: 16px; padding: 4px 8px; border-radius: 3px; border: 1px solid #cbd5e1; }
+        .search-form button { background: var(--accent); color: #fff; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; transition: background 0.2s; }
+        .search-form button:hover { background: #2b6cb0; }
+        table { border-collapse: collapse; width: 100%; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        th, td { border: 1px solid #cbd5e1; padding: 8px; text-align: left; }
+        th { background: var(--accent); color: #fff; }
+        tbody tr:nth-child(even) { background: var(--row-even); }
+        tbody tr:nth-child(odd) { background: var(--row-odd); }
+        tbody tr:hover { background: var(--row-hover); }
+        .error { color: var(--error); margin-bottom: 16px; }
+        .desc-cell { cursor: pointer; position: relative; }
+        .desc-cell .desc-preview { display: inline; }
+        .desc-cell .desc-full { display: none; }
+        .desc-cell.expanded .desc-preview { display: none; }
+        .desc-cell.expanded .desc-full { display: inline; }
+    </style>
+</head>
+<body>
+    <header>
+        Hybrid Search Platform
+    </header>
+    <div class="container">
+        <div class="actions">
+            <button onclick="callDataLoad('load')">Load Data</button>
+            <button onclick="callDataLoad('delete')">Delete Data</button>
+        </div>
+        <form class="search-form" onsubmit="search(event)">
+            <label for="queryText">Search phrase:</label>
+            <input type="text" id="queryText" name="queryText" required style="width: 300px;">
+            <button type="submit" style="margin-left: 12px;">Search</button>
+            <br><br>
+            <label for="searchType">Type:</label>
+            <select id="searchType" name="searchType">
+                <option value="HYBRID" selected>HYBRID</option>
+                <option value="KEYWORD">KEYWORD</option>
+                <option value="VECTOR">VECTOR</option>
+            </select>
+            <br><br>
+            <label for="offset">Offset:</label>
+            <input type="number" id="offset" name="offset" value="0" min="0">
+            <label for="limit">Limit:</label>
+            <input type="number" id="limit" name="limit" value="20" min="1" max="100">
+        </form>
+        <div class="error" id="error"></div>
+        <div id="queryTime" style="font-size:1.1rem; color:#2d3748; margin-bottom:12px; display:none;"></div>
+        <table id="resultsTable" style="display:none;">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Location</th>
+                    <th>Country</th>
+                    <th>Attendee Names</th>
+                    <th>Industry Sectors</th>
+                    <th>Industry Groups</th>
+                    <th>Industry Codes</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    <footer style="background: var(--footer-bg); color: var(--footer-text); text-align: center; padding: 18px 0; font-size: 1.1rem; margin-top: auto;">
+        &copy; 2025 Hybrid Search Platform. All rights reserved.
+    </footer>
+    <script>
+        function callDataLoad(action) {
+            document.getElementById('error').textContent = '';
+            fetch(`http://localhost:8585/admin/api/${action}/data`, { method: 'POST' })
+                .then(r => {
+                    if (!r.ok) throw new Error('Failed to ' + action + ' data');
+                    alert('Data ' + (action === 'load' ? 'loaded' : 'deleted') + ' successfully');
+                })
+                .catch(e => document.getElementById('error').textContent = e.message);
+        }
+
+        function search(event) {
+            event.preventDefault();
+            document.getElementById('error').textContent = '';
+            document.getElementById('resultsTable').style.display = 'none';
+            document.getElementById('queryTime').style.display = 'none';
+            const queryText = document.getElementById('queryText').value;
+            const searchType = document.getElementById('searchType').value;
+            const limit = document.getElementById('limit').value;
+            const offset = document.getElementById('offset').value;
+            const start = performance.now();
+            fetch('http://localhost:8585/api/search', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ queryText, searchType, limit, offset })
+            })
+            .then(r => {
+                if (!r.ok) throw new Error('Search failed');
+                return r.json();
+            })
+            .then(data => {
+                const elapsed = performance.now() - start;
+                showQueryTime(elapsed);
+                renderResults(data.conferences);
+            })
+            .catch(e => {
+                document.getElementById('error').textContent = e.message;
+                document.getElementById('queryTime').style.display = 'none';
+            });
+        }
+
+        function showQueryTime(ms) {
+            const div = document.getElementById('queryTime');
+            div.textContent = `Query executed in ${ms.toFixed(1)} ms`;
+            div.style.display = '';
+        }
+
+        function renderResults(conferences) {
+            const table = document.getElementById('resultsTable');
+            const tbody = table.querySelector('tbody');
+            tbody.innerHTML = '';
+            if (!conferences || conferences.length === 0) {
+                table.style.display = 'none';
+                document.getElementById('error').textContent = 'No results found.';
+                return;
+            }
+            conferences.forEach(c => {
+                const row = document.createElement('tr');
+                // Description preview logic
+                let desc = c.description ?? '';
+                let words = desc.split(/\s+/);
+                let preview = words.slice(0, 5).join(' ');
+                let isTruncated = words.length > 5;
+                let descHtml = isTruncated
+                    ? `<span class='desc-preview'>${preview}...</span><span class='desc-full'>${desc}</span>`
+                    : `<span class='desc-preview'>${desc}</span>`;
+                row.innerHTML = `
+                    <td>${c.id ?? ''}</td>
+                    <td>${c.name ?? ''}</td>
+                    <td class="desc-cell">${descHtml}</td>
+                    <td>${c.startDate ?? ''}</td>
+                    <td>${c.endDate ?? ''}</td>
+                    <td>${c.formattedLocation ?? ''}</td>
+                    <td>${c.countryDescription ?? ''}</td>
+                    <td>${c.attendeeNamesConcatString ?? ''}</td>
+                    <td>${c.industrySectorsConcatString ?? ''}</td>
+                    <td>${c.industryGroupsConcatString ?? ''}</td>
+                    <td>${c.industryCodesConcatString ?? ''}</td>
+                    <td>${c.score ?? ''}</td>
+                `;
+                tbody.appendChild(row);
+            });
+            // Add click event for description expand/collapse
+            tbody.querySelectorAll('.desc-cell').forEach(cell => {
+                cell.addEventListener('click', function(e) {
+                    this.classList.toggle('expanded');
+                });
+            });
+            table.style.display = '';
+        }
+    </script>
+</body>
+</html>
