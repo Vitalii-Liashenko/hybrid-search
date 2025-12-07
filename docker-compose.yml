@@ -12,6 +12,8 @@ services:
       - "8080:80"
     environment:
       HF_TOKEN: "${HUGGING_FACE_HUB_TOKEN}"
+    networks:
+      - esnet
     deploy:
       resources:
         limits:
@@ -38,6 +40,8 @@ services:
         hard: 65536
     cap_add:
       - IPC_LOCK
+    networks:
+      - esnet
     volumes:
       - ./esdata:/usr/share/elasticsearch/data
     ports:
@@ -45,5 +49,7 @@ services:
       - "9300:9300"
     restart: unless-stopped
 
-
+networks:
+  esnet:
+    driver: bridge
 

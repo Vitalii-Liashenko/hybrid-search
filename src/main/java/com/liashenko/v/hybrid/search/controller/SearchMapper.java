@@ -1,7 +1,7 @@
 package com.liashenko.v.hybrid.search.controller;
 
 import com.liashenko.v.hybrid.search.controller.dto.ConferenceDto;
-import com.liashenko.v.hybrid.search.service.model.Conference;
+import com.liashenko.v.hybrid.search.model.Conference;
 import org.mapstruct.Mapper;
 
 import java.util.List;

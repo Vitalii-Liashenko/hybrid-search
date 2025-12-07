@@ -1,0 +1,17 @@
+spring:
+  elasticsearch:
+    uris: ${ES_URL}
+    username: ${ES_USERNAME}
+    password: ${ES_PASSWORD}
+
+data-loading:
+  batch-size: 1
+  dataset-file-path: classpath:data/conferences_100.csv
+  index-config-file-path: classpath:es/conference_index_settings.json
+
+elasticsearch.index: conferences_100
+
+vertex:
+  project-id: ${VERTEX_PROJECT_ID}
+  region: ${VERTEX_REGION}
+  model: ${VERTEX_MODEL_NAME}

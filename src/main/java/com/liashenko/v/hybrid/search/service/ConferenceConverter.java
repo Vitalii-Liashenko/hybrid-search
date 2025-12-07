@@ -1,6 +1,6 @@
 package com.liashenko.v.hybrid.search.service;
 
-import com.liashenko.v.hybrid.search.service.model.Conference;
+import com.liashenko.v.hybrid.search.model.Conference;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

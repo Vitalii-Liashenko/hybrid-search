@@ -15,11 +15,10 @@ import com.liashenko.v.hybrid.search.controller.DefaultSearchMapper;
 import com.liashenko.v.hybrid.search.controller.SearchMapper;
 import com.liashenko.v.hybrid.search.service.ConferenceCsvParser;
 import com.liashenko.v.hybrid.search.service.CsvDataLoaderService;
-import com.liashenko.v.hybrid.search.service.EmbeddingService;
 import com.liashenko.v.hybrid.search.service.SearchService;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ResourceLoader;
@@ -29,6 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.concurrent.Executor;
 
 @Configuration
+@EnableConfigurationProperties
 public class AppConfig {
 
     @Bean(name = "indexingTaskExecutor")
@@ -61,24 +61,6 @@ public class AppConfig {
         JsonpMapper mapper = new JacksonJsonpMapper(objectMapper);
         ElasticsearchTransport transport = new RestClientTransport(elasticRestClient, mapper);
         return new ElasticsearchClient(transport);
-    }
-
-    @Bean
-    SearchService esRepository(ElasticsearchClient elasticsearchClient,
-                               @Value("${elasticsearch.index}") String index,
-                               EmbeddingService embeddingService,
-                               ResourceLoader resourceLoader,
-                               DataLoadingProperties dataLoadingProperties,
-                               Executor indexingTaskExecutor) {
-
-        return new SearchService(
-                elasticsearchClient,
-                index,
-                embeddingService,
-                resourceLoader,
-                dataLoadingProperties.getIndexConfigFilePath(),
-                dataLoadingProperties.getBatchSize(),
-                indexingTaskExecutor);
     }
 
     @Bean

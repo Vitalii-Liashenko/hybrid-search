@@ -1,0 +1,14 @@
+spring:
+  elasticsearch:
+    uris: http://localhost:9200
+    username: elastic
+    password: elastic_password
+
+data-loading:
+  batch-size: 1
+  dataset-file-path: classpath:data/conferences_100.csv
+  index-config-file-path: classpath:es/conference_index_settings.json
+
+elasticsearch.index: conferences_100
+
+embedding-gemma.endpoint: http://localhost:8080

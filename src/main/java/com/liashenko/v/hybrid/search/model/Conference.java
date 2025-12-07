@@ -1,4 +1,4 @@
-package com.liashenko.v.hybrid.search.service.model;
+package com.liashenko.v.hybrid.search.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

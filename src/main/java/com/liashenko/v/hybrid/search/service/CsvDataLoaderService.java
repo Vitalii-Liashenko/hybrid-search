@@ -2,7 +2,7 @@ package com.liashenko.v.hybrid.search.service;
 
 import com.google.common.base.Stopwatch;
 import com.liashenko.v.hybrid.search.config.property.DataLoadingProperties;
-import com.liashenko.v.hybrid.search.service.model.Conference;
+import com.liashenko.v.hybrid.search.model.Conference;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;

@@ -1,10 +1,11 @@
 spring:
   application.name: hybrid-search
-  profiles.active: dev
+  # available profiles: vertex,gemma,inference
+  profiles.active: vertex
   elasticsearch:
-    uris: http://localhost:9200
-    username: ${ES_USERNAME:elastic}
-    password: ${ES_PASSWORD:elastic_password}
+    uris:
+    username:
+    password:
 
 server.port: 8585
 
@@ -48,7 +49,7 @@ management:
 
 data-loading:
   batch-size: 1
-  dataset-file-path: classpath:data/conferences.csv
+  dataset-file-path: classpath:data/conferences_100.csv
   index-config-file-path: classpath:es/conference_index_settings.json
   thread-pool:
     core-pool-size: 4
@@ -56,7 +57,11 @@ data-loading:
     queue-capacity: 1000
     thread-name-prefix: "index-"
 
-elasticsearch.index: conferences
+elasticsearch.index: conferences_100
 
 embedding-gemma.endpoint: http://localhost:8080
 
+vertex:
+  project-id:
+  region:
+  model:

@@ -7,7 +7,7 @@ build/
 .env
 .venv/*
 /logs/*
-/p-scripts/*
+p-scripts.iml
 
 ### STS ###
 .apt_generated
@@ -40,7 +40,8 @@ out/
 ### VS Code ###
 .vscode/
 
-**/data/conferences.csv
-**/data/conferences_100.csv
+**/application_default_credentials.json
+**/data/conferences_16k.csv
 **/data/conferences_1000.csv
 /esdata/
+/vertex/*

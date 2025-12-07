@@ -2,8 +2,8 @@ package com.liashenko.v.hybrid.search.controller;
 
 import com.liashenko.v.hybrid.search.controller.dto.SearchRequest;
 import com.liashenko.v.hybrid.search.controller.dto.SearchResponse;
+import com.liashenko.v.hybrid.search.model.Conference;
 import com.liashenko.v.hybrid.search.service.SearchService;
-import com.liashenko.v.hybrid.search.service.model.Conference;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

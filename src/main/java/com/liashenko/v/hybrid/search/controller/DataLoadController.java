@@ -1,8 +1,8 @@
 package com.liashenko.v.hybrid.search.controller;
 
 import com.google.common.base.Stopwatch;
-import com.liashenko.v.hybrid.search.service.SearchService;
 import com.liashenko.v.hybrid.search.service.CsvDataLoaderService;
+import com.liashenko.v.hybrid.search.service.SearchService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

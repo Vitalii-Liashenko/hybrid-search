@@ -247,7 +247,3 @@ class EntityControllerIntegrationTest {
     }
 }
 ```
-
-### Exclude from Copilot usage large data files
-- ./src/main/resources/data/worldcities.csv
-- ./src/main/resources/data/country_code.csv
